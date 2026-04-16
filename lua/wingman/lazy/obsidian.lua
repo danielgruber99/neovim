@@ -17,6 +17,38 @@ return {
   },
   config = function()
     local vault_path = vim.fn.expand("~/Documents/Obsidian Vault")
+    local function daily_note_timestamp(note_id)
+      local y, m, d = note_id:match("^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+      if y and m and d then
+        return os.time({
+          year = tonumber(y),
+          month = tonumber(m),
+          day = tonumber(d),
+          hour = 12,
+        })
+      end
+      return os.time()
+    end
+
+    local function merge_tags(existing_tags, extra_tags)
+      local seen, merged = {}, {}
+
+      for _, tag in ipairs(existing_tags or {}) do
+        if not seen[tag] then
+          seen[tag] = true
+          table.insert(merged, tag)
+        end
+      end
+
+      for _, tag in ipairs(extra_tags) do
+        if not seen[tag] then
+          seen[tag] = true
+          table.insert(merged, tag)
+        end
+      end
+
+      return merged
+    end
 
     require("obsidian").setup({
       workspaces = {
@@ -37,6 +69,28 @@ return {
       templates = {
         folder = "templates",
       },
+      note_frontmatter_func = function(note)
+        local ts = daily_note_timestamp(note.id)
+        local time_tags = {
+          "year/" .. os.date("%Y", ts),
+          "month/" .. os.date("%m", ts),
+          "CW" .. os.date("%V", ts),
+        }
+
+        local out = {
+          id = note.id,
+          aliases = note.aliases,
+          tags = merge_tags(note.tags, time_tags),
+        }
+
+        if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+          for key, value in pairs(note.metadata) do
+            out[key] = value
+          end
+        end
+
+        return out
+      end,
       picker = {
         name = "telescope.nvim",
       },
