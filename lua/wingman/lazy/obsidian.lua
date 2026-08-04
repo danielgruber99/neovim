@@ -1,16 +1,9 @@
 return {
-  "epwalsh/obsidian.nvim",
+  "obsidian-nvim/obsidian.nvim",
   version = "*",
   ft = "markdown",
   cmd = {
-    "ObsidianQuickSwitch",
-    "ObsidianSearch",
-    "ObsidianNew",
-    "ObsidianToday",
-    "ObsidianYesterday",
-    "ObsidianBacklinks",
-    "ObsidianLinks",
-    "ObsidianRename",
+    "Obsidian",
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
@@ -51,6 +44,7 @@ return {
     end
 
     require("obsidian").setup({
+      legacy_commands = false,
       workspaces = {
         {
           name = "personal",
@@ -106,13 +100,13 @@ return {
       end,
     })
 
-    vim.keymap.set("n", "<leader>oo", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Obsidian quick switch" })
-    vim.keymap.set("n", "<leader>of", "<cmd>ObsidianSearch<CR>", { desc = "Obsidian search" })
-    vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "Obsidian new note" })
-    vim.keymap.set("n", "<leader>ot", "<cmd>ObsidianToday<CR>", { desc = "Obsidian today note" })
-    vim.keymap.set("n", "<leader>oy", "<cmd>ObsidianYesterday<CR>", { desc = "Obsidian yesterday note" })
-    vim.keymap.set("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Obsidian backlinks" })
-    vim.keymap.set("n", "<leader>ol", "<cmd>ObsidianLinks<CR>", { desc = "Obsidian links" })
-    vim.keymap.set("n", "<leader>or", "<cmd>ObsidianRename<CR>", { desc = "Obsidian rename note" })
+    vim.keymap.set("n", "<leader>oo", "<cmd>Obsidian quick_switch<CR>", { desc = "Obsidian quick switch" })
+    vim.keymap.set("n", "<leader>of", "<cmd>Obsidian search<CR>", { desc = "Obsidian search" })
+    vim.keymap.set("n", "<leader>on", "<cmd>Obsidian new<CR>", { desc = "Obsidian new note" })
+    vim.keymap.set("n", "<leader>ot", "<cmd>Obsidian today<CR>", { desc = "Obsidian today note" })
+    vim.keymap.set("n", "<leader>oy", "<cmd>Obsidian yesterday<CR>", { desc = "Obsidian yesterday note" })
+    vim.keymap.set("n", "<leader>ob", "<cmd>Obsidian backlinks<CR>", { desc = "Obsidian backlinks" })
+    vim.keymap.set("n", "<leader>ol", "<cmd>Obsidian links<CR>", { desc = "Obsidian links" })
+    vim.keymap.set("n", "<leader>or", "<cmd>Obsidian rename<CR>", { desc = "Obsidian rename note" })
   end,
 }
