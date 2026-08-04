@@ -53,4 +53,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+
+vim.keymap.set("n", "<F7>", ":tabprevious<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<F8>", ":tabnext<CR>", { noremap = true, silent = true })
+
+Optional helpers:
+
+vim.keymap.set("n", "<leader>tn", ":tabnew<CR>", { noremap = true, silent = true }) -- new empty tab
+vim.keymap.set("n", "<leader>te", ":tabedit ", { noremap = true })                  -- open file in new tab
+
 require("wingman.lazy_init")
