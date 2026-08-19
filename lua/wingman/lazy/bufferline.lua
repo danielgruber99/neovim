@@ -3,11 +3,20 @@ return {
   version = "*",
   dependencies = {
     'nvim-tree/nvim-web-devicons',
-    'folke/tokyonight.nvim',
+  },
+  keys = {
+    { "<M-j>", "<cmd>BufferLineCyclePrev<CR>", desc = "Previous buffer" },
+    { "<M-k>", "<cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
+    { "<C-Tab>", "<cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
+    { "<C-S-Tab>", "<cmd>BufferLineCyclePrev<CR>", desc = "Previous buffer" },
   },
   config = function()
-    vim.cmd.colorscheme("tokyonight")
     vim.opt.termguicolors = true
-    require('bufferline').setup {}
+    require('bufferline').setup({
+      options = {
+        mode = "buffers",
+        always_show_bufferline = true,
+      },
+    })
   end
 }

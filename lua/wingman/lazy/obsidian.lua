@@ -4,6 +4,7 @@ return {
   ft = "markdown",
   cmd = {
     "Obsidian",
+    "ObsidianDay",
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
@@ -43,6 +44,26 @@ return {
       return merged
     end
 
+    local function open_daily_note_for_date(date_str)
+      local log = require("obsidian.log")
+      local parsed_date, err = require("obsidian.util").parse_date(date_str, "DD-MM-YYYY")
+      if not parsed_date then
+        log.err(string.format("Invalid date: %s (expected dd-mm-yyyy)\nErr: %s", date_str, err or "parse failed"))
+        return
+      end
+
+      local normalized = os.date("%d-%m-%Y", os.time(parsed_date))
+      if normalized ~= date_str then
+        log.err(string.format("Invalid date: %s (expected dd-mm-yyyy)", date_str))
+        return
+      end
+
+      local note = require("obsidian.daily").daily({ date = os.time(parsed_date) })
+      if note ~= nil then
+        note:open()
+      end
+    end
+
     require("obsidian").setup({
       legacy_commands = false,
       workspaces = {
@@ -63,28 +84,30 @@ return {
       templates = {
         folder = "templates",
       },
-      note_frontmatter_func = function(note)
-        local ts = daily_note_timestamp(note.id)
-        local time_tags = {
-          "year/" .. os.date("%Y", ts),
-          "month/" .. os.date("%m", ts),
-          "CW" .. os.date("%V", ts),
-        }
+      frontmatter = {
+        func = function(note)
+          local ts = daily_note_timestamp(note.id)
+          local time_tags = {
+            "year/" .. os.date("%Y", ts),
+            "month/" .. os.date("%m", ts),
+            "CW" .. os.date("%V", ts),
+          }
 
-        local out = {
-          id = note.id,
-          aliases = note.aliases,
-          tags = merge_tags(note.tags, time_tags),
-        }
+          local out = {
+            id = note.id,
+            aliases = note.aliases,
+            tags = merge_tags(note.tags, time_tags),
+          }
 
-        if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-          for key, value in pairs(note.metadata) do
-            out[key] = value
+          if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+            for key, value in pairs(note.metadata) do
+              out[key] = value
+            end
           end
-        end
 
-        return out
-      end,
+          return out
+        end,
+      },
       picker = {
         name = "telescope.nvim",
       },
@@ -105,8 +128,23 @@ return {
     vim.keymap.set("n", "<leader>on", "<cmd>Obsidian new<CR>", { desc = "Obsidian new note" })
     vim.keymap.set("n", "<leader>ot", "<cmd>Obsidian today<CR>", { desc = "Obsidian today note" })
     vim.keymap.set("n", "<leader>oy", "<cmd>Obsidian yesterday<CR>", { desc = "Obsidian yesterday note" })
+    vim.keymap.set("n", "<leader>od", function()
+      local date_str = vim.fn.input("Daily note date (dd-mm-yyyy): ")
+      if date_str == nil or date_str == "" then
+        vim.notify("Daily note date is required (dd-mm-yyyy)", vim.log.levels.WARN)
+        return
+      end
+
+      open_daily_note_for_date(date_str)
+    end, { desc = "Obsidian daily note by date" })
     vim.keymap.set("n", "<leader>ob", "<cmd>Obsidian backlinks<CR>", { desc = "Obsidian backlinks" })
     vim.keymap.set("n", "<leader>ol", "<cmd>Obsidian links<CR>", { desc = "Obsidian links" })
     vim.keymap.set("n", "<leader>or", "<cmd>Obsidian rename<CR>", { desc = "Obsidian rename note" })
+    vim.api.nvim_create_user_command("ObsidianDay", function(command_opts)
+      open_daily_note_for_date(vim.trim(command_opts.args))
+    end, {
+      nargs = 1,
+      desc = "Open or create a daily note using dd-mm-yyyy",
+    })
   end,
 }

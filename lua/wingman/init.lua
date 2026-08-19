@@ -1,7 +1,7 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 if vim.g.have_nerd_font == nil then
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 end
 
 -- Core editing defaults (mostly from kickstart.nvim)
@@ -57,9 +57,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.keymap.set("n", "<F7>", ":tabprevious<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<F8>", ":tabnext<CR>", { noremap = true, silent = true })
 
-Optional helpers:
-
 vim.keymap.set("n", "<leader>tn", ":tabnew<CR>", { noremap = true, silent = true }) -- new empty tab
-vim.keymap.set("n", "<leader>te", ":tabedit ", { noremap = true })                  -- open file in new tab
+vim.keymap.set("n", "<leader>te", ":tabedit ", { noremap = true, silent = true }) -- open file in new tab
 
 require("wingman.lazy_init")
