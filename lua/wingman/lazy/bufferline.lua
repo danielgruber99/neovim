@@ -16,6 +16,15 @@ return {
       options = {
         mode = "buffers",
         always_show_bufferline = true,
+        show_tab_indicators = true,
+        offsets = {
+          {
+            filetype = "NvimTree",
+            text = "File Explorer",
+            highlight = "Directory",
+            separator = true,
+          },
+        },
       },
     })
   end

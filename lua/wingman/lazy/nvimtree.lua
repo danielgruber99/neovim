@@ -14,7 +14,14 @@ return {
         filters = {
           dotfiles = false,
           git_ignored = false
-        }
+        },
+        -- keep the tree open/closed in sync across tabpages
+        tab = {
+          sync = {
+            open = true,
+            close = true,
+          },
+        },
       }
     )
   end
